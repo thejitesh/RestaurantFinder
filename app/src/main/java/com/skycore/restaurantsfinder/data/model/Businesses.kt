@@ -1,4 +1,4 @@
-package com.skycore.restaurantsfinder.data
+package com.skycore.restaurantsfinder.data.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -16,7 +16,7 @@ data class Businesses(
     @SerializedName("transactions") val transactions: List<String>,
     @SerializedName("price") val price: String,
     @SerializedName("location") val location: Location,
-    @SerializedName("phone") val phone: Int,
+    @SerializedName("phone") val phone: String,
     @SerializedName("display_phone") val display_phone: String,
     @SerializedName("distance") val distance: Double
 )

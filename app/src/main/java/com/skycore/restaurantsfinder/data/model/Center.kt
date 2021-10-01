@@ -1,4 +1,4 @@
-package com.skycore.restaurantsfinder.data
+package com.skycore.restaurantsfinder.data.model
 
 import com.google.gson.annotations.SerializedName
 
