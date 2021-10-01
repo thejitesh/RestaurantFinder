@@ -7,5 +7,5 @@ class RestaurantsRepository {
 
     private val backendApi: BackendApi = BackendServiceBuilder.buildBackendApi()
 
-    suspend fun getRestaurantsData() = backendApi.getRestaurantsData()
+    suspend fun getRestaurantsData(latitude: Double, longitude: Double, radius: Int) = backendApi.getRestaurantsData(latitude = latitude, longitude = longitude, radius = radius)
 }

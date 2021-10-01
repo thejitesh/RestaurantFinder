@@ -12,6 +12,8 @@ interface BackendApi {
     @GET("search")
     suspend fun getRestaurantsData(
         @Header("Authorization") authHeader: String = "Bearer XPFgzKwZGK1yqRxHi0d5xsARFOLpXIvccQj5jekqTnysweGyoIfVUHcH2tPfGq5Oc9kwKHPkcOjk2d1Xobn7aTjOFeop8x41IUfVvg2Y27KiINjYPADcE7Qza0RkX3Yx",
-        @Query("location") location: String = "NYC"
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("radius") radius: Int = 0
     ): RestaurantsData
 }

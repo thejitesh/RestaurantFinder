@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.skycore.restaurantsfinder.helper.DistanceMappingHelper
 import com.skycore.restaurantsfinder.helper.LocationPermissionHelper
 import com.skycore.restaurantsfinder.ui.RestaurantsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,8 +47,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                Log.d("seekbar", "seekbar touch stopped! & value: " + (seekBar.progress * 5000) / 100)
-
+                observeCurrentLocationDataAndRequestRestaurantsData()
             }
         })
 
@@ -55,7 +55,13 @@ class MainActivity : AppCompatActivity() {
             Log.d(",", "")
         })
 
-        viewModel.fetchRestaurantsData(null)
+        observeCurrentLocationDataAndRequestRestaurantsData()
+    }
+
+    private fun observeCurrentLocationDataAndRequestRestaurantsData() {
+        viewModel.currentLocationData.observe(this, Observer {
+            viewModel.fetchRestaurantsData(it.latitude, it.longitude, DistanceMappingHelper.mapProgressBarDistance(seekbar.progress))
+        })
     }
 
     override fun onResume() {
@@ -78,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             fusedLocationClient.lastLocation.addOnSuccessListener {
                 it?.let {
-
+                    viewModel.setLocationData(it)
                 }
             }
         } else {

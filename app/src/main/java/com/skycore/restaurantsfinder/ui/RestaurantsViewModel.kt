@@ -13,11 +13,16 @@ import kotlinx.coroutines.launch
 class RestaurantsViewModel : ViewModel() {
 
     private val restaurantsRepository = RestaurantsRepository()
-     val restaurantsData: MutableLiveData<RestaurantsData> = MutableLiveData()
+    val restaurantsData: MutableLiveData<RestaurantsData> = MutableLiveData()
+    val currentLocationData: MutableLiveData<Location> = MutableLiveData()
 
-    fun fetchRestaurantsData(location: Location?) {
+    fun fetchRestaurantsData(latitude: Double, longitude: Double, radius: Int) {
         viewModelScope.launch {
-            restaurantsData.value = restaurantsRepository.getRestaurantsData()
+            restaurantsData.value = restaurantsRepository.getRestaurantsData(latitude, longitude, radius)
         }
+    }
+
+    fun setLocationData(currentLocation: Location) {
+        currentLocationData.value = currentLocation
     }
 }
