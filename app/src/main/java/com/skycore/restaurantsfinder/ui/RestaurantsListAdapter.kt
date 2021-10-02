@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.skycore.restaurantsfinder.R
 import com.skycore.restaurantsfinder.data.model.Businesses
 import com.skycore.restaurantsfinder.helper.DistanceMappingHelper
+import com.skycore.restaurantsfinder.helper.ImageUtils
 import java.lang.ref.WeakReference
 
 class RestaurantsListAdapter : PagingDataAdapter<Businesses, RecyclerView.ViewHolder>(REPO_COMPARATOR) {
@@ -40,7 +41,14 @@ class RestaurantsListAdapter : PagingDataAdapter<Businesses, RecyclerView.ViewHo
         private var tvRestaurantRatting: TextView = view.findViewById(R.id.item_restaurant_ratting)
 
         fun bind(item: Businesses?) {
-            // imgRestaurantImage
+            if (item?.image_url != null) {
+                ImageUtils.loadImage(
+                    WeakReference(imgRestaurantImage.context),
+                    item.image_url,
+                    imgRestaurantImage,
+                    R.drawable.placeholder_restaurant
+                )
+            }
             tvRestaurantName.text = item?.name ?: "EMPTY"
             var formattedDistance = ""
             if (item?.distance != null) {

@@ -11,6 +11,8 @@
         android:id="@+id/item_restaurant_image"
         android:layout_width="60dp"
         android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,7 +21,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_12"
-        android:layout_marginTop="@dimen/margin_4"
+        android:includeFontPadding="false"
+        android:layout_marginTop="@dimen/margin_6"
         android:layout_marginEnd="@dimen/margin_12"
         android:fontFamily="sans-serif-black"
         android:textColor="#000000"
