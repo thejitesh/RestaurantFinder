@@ -1,6 +1,7 @@
 package com.skycore.restaurantsfinder.data.api
 
 import com.skycore.restaurantsfinder.data.model.RestaurantsData
+import com.skycore.restaurantsfinder.helper.Constants.RESTAURANTS_PER_PAGE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -14,6 +15,8 @@ interface BackendApi {
         @Header("Authorization") authHeader: String = "Bearer XPFgzKwZGK1yqRxHi0d5xsARFOLpXIvccQj5jekqTnysweGyoIfVUHcH2tPfGq5Oc9kwKHPkcOjk2d1Xobn7aTjOFeop8x41IUfVvg2Y27KiINjYPADcE7Qza0RkX3Yx",
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("radius") radius: Int = 0
+        @Query("offset") offset: Int,
+        @Query("radius") radius: Int = 0,
+        @Query("limit") limit: Int = RESTAURANTS_PER_PAGE
     ): RestaurantsData
 }

@@ -12,13 +12,18 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.skycore.restaurantsfinder.helper.DistanceMappingHelper
+import com.skycore.restaurantsfinder.helper.DistanceMappingHelper.INITIAL_RADIUS_IN_METERS
 import com.skycore.restaurantsfinder.helper.LocationPermissionHelper
+import com.skycore.restaurantsfinder.ui.RestaurantsListAdapter
 import com.skycore.restaurantsfinder.ui.RestaurantsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 
@@ -27,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val viewModel: RestaurantsViewModel by viewModels()
+    private var adapter: RestaurantsListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +43,9 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        adapter = RestaurantsListAdapter()
+        activity_main_rv_restaurants.layoutManager = LinearLayoutManager(this)
+        activity_main_rv_restaurants.adapter = adapter
         seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 Log.d("seekbar", "seekbar progress: $progress")
@@ -47,22 +56,36 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                observeCurrentLocationDataAndRequestRestaurantsData()
+                viewModel.setRadiusData(DistanceMappingHelper.mapProgressBarDistance(seekbar.progress))
             }
         })
 
-        viewModel.restaurantsData.observe(this, Observer {
-            Log.d(",", "")
+        viewModel.radiusData.observe(this, Observer {
+            fetchRestaurantsData()
         })
 
-        observeCurrentLocationDataAndRequestRestaurantsData()
-    }
-
-    private fun observeCurrentLocationDataAndRequestRestaurantsData() {
         viewModel.currentLocationData.observe(this, Observer {
-            viewModel.fetchRestaurantsData(it.latitude, it.longitude, DistanceMappingHelper.mapProgressBarDistance(seekbar.progress))
+            fetchRestaurantsData()
         })
     }
+
+    private fun fetchRestaurantsData() {
+        lifecycleScope.launch {
+            val radius = if (viewModel.radiusData.value == null) INITIAL_RADIUS_IN_METERS else viewModel.radiusData.value!!
+            if (viewModel.currentLocationData.value != null) {
+                viewModel.fetchRestaurantsData(
+                    viewModel.currentLocationData.value!!.latitude,
+                    viewModel.currentLocationData.value!!.longitude,
+                    radius
+                ).observe(this@MainActivity, Observer {
+                    lifecycleScope.launch {
+                        adapter?.submitData(it)
+                    }
+                })
+            }
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
