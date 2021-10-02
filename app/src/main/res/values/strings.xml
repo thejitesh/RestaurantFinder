@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Restaurants Finder</string>
+    <string name="radius_selector">Radius Selector</string>
 </resources>

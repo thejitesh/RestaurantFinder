@@ -7,12 +7,15 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -44,6 +47,33 @@ class MainActivity : AppCompatActivity() {
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         adapter = RestaurantsListAdapter()
+        adapter?.addLoadStateListener { loadState ->
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    //loading complete data set
+                    progressBar.visibility = View.VISIBLE
+                    progressBarAppend.visibility = View.GONE
+                }
+                loadState.append is LoadState.Loading -> {
+                    //on demand loading - [pagination]
+                    progressBarAppend.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                }
+                else -> {
+                    progressBar.visibility = View.GONE
+                    progressBarAppend.visibility = View.GONE
+                    val errorState = when {
+                        loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                        loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                        loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                        else -> null
+                    }
+                    errorState?.let {
+                        Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
         activity_main_rv_restaurants.layoutManager = LinearLayoutManager(this)
         activity_main_rv_restaurants.adapter = adapter
         seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
