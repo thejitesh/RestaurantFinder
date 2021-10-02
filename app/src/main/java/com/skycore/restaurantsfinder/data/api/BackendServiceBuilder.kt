@@ -9,8 +9,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.Gson
 
 
-
-
 object BackendServiceBuilder {
 
     private const val BASE_URL = "https://api.yelp.com/v3/businesses/";
@@ -21,8 +19,8 @@ object BackendServiceBuilder {
             .setLenient()
             .create()
 
-      val  interceptor =   HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BASIC
 
         val client = OkHttpClient.Builder()
             .addInterceptor(interceptor)

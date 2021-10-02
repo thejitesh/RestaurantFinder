@@ -67,10 +67,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.currentLocationData.observe(this, Observer {
             fetchRestaurantsData()
         })
+
+        checkSettings()
     }
 
     private fun fetchRestaurantsData() {
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenCreated {
             val radius = if (viewModel.radiusData.value == null) INITIAL_RADIUS_IN_METERS else viewModel.radiusData.value!!
             if (viewModel.currentLocationData.value != null) {
                 viewModel.fetchRestaurantsData(
@@ -84,12 +86,6 @@ class MainActivity : AppCompatActivity() {
                 })
             }
         }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        checkSettings()
     }
 
     private fun checkSettings() {

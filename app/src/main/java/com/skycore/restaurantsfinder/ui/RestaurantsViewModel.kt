@@ -16,7 +16,7 @@ class RestaurantsViewModel : ViewModel() {
         return Pager(config = PagingConfig(pageSize = RESTAURANTS_PER_PAGE, enablePlaceholders = true),
             pagingSourceFactory = {
                 RestaurantsDataSource(latitude, longitude, radius)
-            }).liveData.map { it -> it.map { it } }
+            }).liveData
             .cachedIn(viewModelScope)
     }
 
