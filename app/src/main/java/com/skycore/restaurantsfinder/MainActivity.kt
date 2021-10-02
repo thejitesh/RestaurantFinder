@@ -78,11 +78,10 @@ class MainActivity : AppCompatActivity() {
         activity_main_rv_restaurants.adapter = adapter
         seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                Log.d("seekbar", "seekbar progress: $progress")
+                tv_radius_distance.text = DistanceMappingHelper.formatDistance(progress, WeakReference(this@MainActivity))
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
-                Log.d("seekbar", "seekbar touch started!")
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {

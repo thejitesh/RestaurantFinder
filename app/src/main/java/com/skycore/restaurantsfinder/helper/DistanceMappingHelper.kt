@@ -1,5 +1,9 @@
 package com.skycore.restaurantsfinder.helper
 
+import android.content.Context
+import com.skycore.restaurantsfinder.R
+import java.lang.ref.WeakReference
+
 object DistanceMappingHelper {
 
     const val INITIAL_RADIUS_IN_METERS = 100
@@ -8,5 +12,14 @@ object DistanceMappingHelper {
 
     fun mapProgressBarDistance(progress: Int) = (progress * UNIT_DISTANCE) + INITIAL_RADIUS_IN_METERS
 
-    fun mapMetersToKilometer(distanceInMeters: Int) = distanceInMeters / 1000
+    fun formatDistance(progress: Int, contextWeakRef: WeakReference<Context>): String {
+        val context: Context? = contextWeakRef.get()
+        val distanceInMeters = mapProgressBarDistance(progress)
+        return if (distanceInMeters < 1000) {
+            context?.getString(R.string.distance_in_meters, distanceInMeters) ?: distanceInMeters.toString()
+        } else {
+            val distanceInKm: Float = distanceInMeters.toFloat() / 1000
+            context?.getString(R.string.distance_in_kilo_meters, distanceInKm) ?: distanceInMeters.toString()
+        }
+    }
 }
