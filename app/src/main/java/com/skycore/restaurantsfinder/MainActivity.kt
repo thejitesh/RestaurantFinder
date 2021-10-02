@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -62,6 +61,7 @@ class MainActivity : AppCompatActivity() {
                 else -> {
                     progressBar.visibility = View.GONE
                     progressBarAppend.visibility = View.GONE
+                    swiperefresh.isRefreshing = false
                     val errorState = when {
                         loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
                         loadState.append is LoadState.Error -> loadState.append as LoadState.Error
@@ -88,6 +88,10 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setRadiusData(DistanceMappingHelper.mapProgressBarDistance(seekbar.progress))
             }
         })
+
+        swiperefresh.setOnRefreshListener {
+            fetchRestaurantsData()
+        }
 
         viewModel.radiusData.observe(this, Observer {
             fetchRestaurantsData()
