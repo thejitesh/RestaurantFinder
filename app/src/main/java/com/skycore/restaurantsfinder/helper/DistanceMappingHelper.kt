@@ -22,4 +22,14 @@ object DistanceMappingHelper {
             context?.getString(R.string.distance_in_kilo_meters, distanceInKm) ?: distanceInMeters.toString()
         }
     }
+
+    fun formatDisplayDistance(distanceInMeter: Double, contextWeakRef: WeakReference<Context>): String {
+        val context: Context? = contextWeakRef.get()
+        return if (distanceInMeter < 1000.0) {
+            context?.getString(R.string.item_restaurant_lis_distance_in_meters, distanceInMeter) ?: distanceInMeter.toString()
+        } else {
+            val distanceInKm = distanceInMeter * 1000
+            context?.getString(R.string.item_restaurant_lis_distance_in_kilo_meters, distanceInKm) ?: distanceInKm.toString()
+        }
+    }
 }

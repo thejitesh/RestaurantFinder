@@ -3,4 +3,6 @@
     <string name="radius_selector">Radius Selector</string>
     <string name="distance_in_meters">%d M</string>
     <string name="distance_in_kilo_meters">%.2f KM</string>
+    <string name="item_restaurant_lis_distance_in_meters">%.2fm</string>
+    <string name="item_restaurant_lis_distance_in_kilo_meters">%.2fkm</string>
 </resources>

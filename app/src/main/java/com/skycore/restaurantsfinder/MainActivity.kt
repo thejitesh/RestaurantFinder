@@ -12,9 +12,11 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -76,6 +78,16 @@ class MainActivity : AppCompatActivity() {
         }
         activity_main_rv_restaurants.layoutManager = LinearLayoutManager(this)
         activity_main_rv_restaurants.adapter = adapter
+
+
+        val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+        val drawable = ContextCompat.getDrawable(this, R.drawable.shape_verticle_space)
+        if (drawable != null) {
+            dividerItemDecoration.setDrawable(drawable)
+        }
+        activity_main_rv_restaurants.addItemDecoration(dividerItemDecoration)
+
+
         seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 tv_radius_distance.text = DistanceMappingHelper.formatDistance(progress, WeakReference(this@MainActivity))
