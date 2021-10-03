@@ -120,11 +120,11 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
     }
 
     private fun observeDataChange() {
-        viewModel.radiusData.observe(this, Observer {
+        viewModel.radiusData.observe(viewLifecycleOwner, Observer {
             fetchRestaurantsData()
         })
 
-        viewModel.currentLocationData.observe(this, Observer {
+        viewModel.currentLocationData.observe(viewLifecycleOwner, Observer {
             fetchRestaurantsData()
         })
     }
@@ -148,7 +148,7 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
 
     private fun checkSettings() {
         if (!LocationPermissionHelper.isLocationPermissionGranted(WeakReference(requireContext()))) {
-            Snackbar.make(container, "Require Location Permission!", Snackbar.LENGTH_INDEFINITE).setAction("REQUEST") {
+            Snackbar.make(container, getString(R.string.require_permission_message), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.require_permission_cta)) {
                 LocationPermissionHelper.requestLocationPermission(WeakReference(requireActivity()))
             }.show()
         } else {
@@ -165,7 +165,7 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
                 }
             }
         } else {
-            Snackbar.make(container, "Require GPS", Snackbar.LENGTH_INDEFINITE).setAction("Turn on") {
+            Snackbar.make(container, getString(R.string.require_gps_message), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.require_gps_cta)) {
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }.show();

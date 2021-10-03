@@ -5,4 +5,10 @@
     <string name="distance_in_kilo_meters">%.2f KM</string>
     <string name="item_restaurant_lis_distance_in_meters">%.2fm</string>
     <string name="item_restaurant_lis_distance_in_kilo_meters">%.2fkm</string>
+    <string name="require_permission_message">Require Location Permission!</string>
+    <string name="require_permission_cta">REQUEST</string>
+    <string name="require_gps_message">Require GPS</string>
+    <string name="require_gps_cta">Turn on</string>
+    <string name="restaurants_status_closed">Currently CLOSED</string>
+    <string name="restaurants_status_open">Currently OPEN</string>
 </resources>
