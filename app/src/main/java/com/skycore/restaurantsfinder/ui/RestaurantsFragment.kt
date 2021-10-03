@@ -121,6 +121,9 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
                     errorState?.let {
                         Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
                     }
+                    if (adapter?.itemCount == 0) {
+                        Toast.makeText(requireContext(), getString(R.string.no_data_found), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

@@ -13,4 +13,5 @@
     <string name="restaurants_status_open">Currently OPEN</string>
     <string name="fetching_location">Fetching Location</string>
     <string name="location_received_success">Location Received</string>
+    <string name="no_data_found">No Data Found for your Location, Please Increase Search Radius or change location</string>
 </resources>
