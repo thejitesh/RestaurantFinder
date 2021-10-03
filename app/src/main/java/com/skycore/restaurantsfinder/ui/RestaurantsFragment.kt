@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.widget.SeekBar
@@ -18,15 +19,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.skycore.restaurantsfinder.R
 import com.skycore.restaurantsfinder.helper.DistanceMappingHelper
-import com.skycore.restaurantsfinder.helper.LocationPermissionHelper
+import com.skycore.restaurantsfinder.helper.LocationHelper
 import kotlinx.android.synthetic.main.fragment_restaurants_list.*
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+
 
 class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
 
@@ -34,6 +35,7 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val viewModel: RestaurantsViewModel by viewModels()
     private var adapter: RestaurantsListAdapter? = null
+    private var isLocationListenerAdded = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,6 +50,11 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
             fetchRestaurantsData()
         }
         observeDataChange()
+        checkSettings()
+    }
+
+    override fun onResume() {
+        super.onResume()
         checkSettings()
     }
 
@@ -147,9 +154,9 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
     }
 
     private fun checkSettings() {
-        if (!LocationPermissionHelper.isLocationPermissionGranted(WeakReference(requireContext()))) {
+        if (!LocationHelper.isLocationPermissionGranted(WeakReference(requireContext()))) {
             Snackbar.make(container, getString(R.string.require_permission_message), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.require_permission_cta)) {
-                LocationPermissionHelper.requestLocationPermission(WeakReference(this))
+                LocationHelper.requestLocationPermission(WeakReference(this))
             }.show()
         } else {
             checkGpsSettings()
@@ -159,10 +166,18 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
     @SuppressLint("MissingPermission")
     private fun checkGpsSettings() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            fusedLocationClient.lastLocation.addOnSuccessListener {
-                it?.let {
-                    viewModel.setLocationData(it)
+            if (!isLocationListenerAdded) {
+                Snackbar.make(container, getString(R.string.fetching_location), Snackbar.LENGTH_LONG).show()
+                isLocationListenerAdded = true
+                val locationRequest = LocationHelper.getLocationRequest()
+                val locationCallback = object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        Snackbar.make(container, getString(R.string.location_received_success), Snackbar.LENGTH_LONG).show()
+                        viewModel.setLocationData(locationResult.lastLocation)
+                        fusedLocationClient.removeLocationUpdates(this)
+                    }
                 }
+                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
             }
         } else {
             Snackbar.make(container, getString(R.string.require_gps_message), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.require_gps_cta)) {
@@ -176,7 +191,7 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
             when (requestCode) {
-                LocationPermissionHelper.MY_PERMISSIONS_REQUEST_LOCATION -> {
+                LocationHelper.PERMISSIONS_REQUEST_LOCATION -> {
                     checkGpsSettings()
                 }
             }
