@@ -149,7 +149,7 @@ class RestaurantsFragment : Fragment(R.layout.fragment_restaurants_list) {
     private fun checkSettings() {
         if (!LocationPermissionHelper.isLocationPermissionGranted(WeakReference(requireContext()))) {
             Snackbar.make(container, getString(R.string.require_permission_message), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.require_permission_cta)) {
-                LocationPermissionHelper.requestLocationPermission(WeakReference(requireActivity()))
+                LocationPermissionHelper.requestLocationPermission(WeakReference(this))
             }.show()
         } else {
             checkGpsSettings()
