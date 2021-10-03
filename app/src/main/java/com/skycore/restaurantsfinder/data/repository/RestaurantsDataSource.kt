@@ -18,6 +18,8 @@ class RestaurantsDataSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Businesses> {
         return try {
             val currentPageOffset = params.key ?: 0
+            //NYC info : latitude = 40.730610, longitude = -73.935242
+            //val response = backendApi.getRestaurantsData( latitude = 40.730610, longitude = -73.935242, radius = radius, offset = currentPageOffset)
             val response = backendApi.getRestaurantsData(latitude = latitude, longitude = longitude, radius = radius, offset = currentPageOffset)
             val prevPageOffset = currentPageOffset - RESTAURANTS_PER_PAGE
             val prevKey = if (currentPageOffset == 0 || prevPageOffset <= 0) {
