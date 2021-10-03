@@ -28,7 +28,7 @@ object DistanceMappingHelper {
         return if (distanceInMeter < 1000.0) {
             context?.getString(R.string.item_restaurant_lis_distance_in_meters, distanceInMeter) ?: distanceInMeter.toString()
         } else {
-            val distanceInKm = distanceInMeter * 1000
+            val distanceInKm = distanceInMeter / 1000
             context?.getString(R.string.item_restaurant_lis_distance_in_kilo_meters, distanceInKm) ?: distanceInKm.toString()
         }
     }

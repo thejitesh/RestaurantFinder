@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference
 
 object LocationPermissionHelper {
 
-    val MY_PERMISSIONS_REQUEST_LOCATION = 10001
+    const val MY_PERMISSIONS_REQUEST_LOCATION = 10001
 
      fun requestLocationPermission(activity : WeakReference<Activity>) {
         ActivityCompat.requestPermissions(activity.get()!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), MY_PERMISSIONS_REQUEST_LOCATION)
